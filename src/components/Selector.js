@@ -17,12 +17,11 @@ const data = [
   { id: 'p', title: 'Paragraph' },
 ];
 
-const rowHeight = 50;
+const rowHeight = 55;
 const maxHeight = 300;
 
 const Selector = forwardRef((props, ref) => {
   const { selectionChanged, position, text } = props;
-  console.log(text);
   const [visibleData, setVisibleData] = useState(data);
   const [suggestionIndex, setSuggestionIndex] = useState(0);
   const ul = useRef(null);
@@ -35,11 +34,6 @@ const Selector = forwardRef((props, ref) => {
         || item.id.toLowerCase().includes(text.toLowerCase())),
     );
   }, [text]);
-
-  const select = (val) => {
-    console.log(val);
-    selectionChanged(val);
-  };
 
   useImperativeHandle(ref, () => ({
 
@@ -68,7 +62,7 @@ const Selector = forwardRef((props, ref) => {
         }
       } else if (e.code === 'Enter') {
         e.preventDefault();
-        select();
+        selectionChanged(visibleData[suggestionIndex].id);
       }
     },
 
@@ -80,7 +74,14 @@ const Selector = forwardRef((props, ref) => {
       style={{ top: position.top, left: position.left }}
     >
       <b>Add Blocks</b>
-      <span>Keep typing to filter</span>
+      <span>Keep typing to filter, or escape to exit</span>
+      {text && (
+      <span>
+        filtering keyword
+        {' '}
+        <b>{text}</b>
+      </span>
+      )}
       <ul className={style.ul} ref={ul}>
         {visibleData.map((item, i) => (
           <li
@@ -98,7 +99,7 @@ const Selector = forwardRef((props, ref) => {
             }}
             title={item.title}
           >
-            <button type="button" onClick={() => select(item.id)}>
+            <button type="button" onClick={() => selectionChanged(item.id)}>
               <b>{item.id.toUpperCase()}</b>
               <div dangerouslySetInnerHTML={{ __html: `<${item.id}> ${item.title} </${item.id}>` }} />
             </button>
