@@ -16,6 +16,7 @@ export default function Pages(props) {
   const [text, setText] = useState('');
   const [editingText, setEditingText] = useState('');
   const [error, setError] = useState('');
+
   // to implement blinking animation
   const setErrorWithAnimation = (errorText) => {
     setError(null);

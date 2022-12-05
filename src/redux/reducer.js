@@ -7,7 +7,7 @@ const EDIT_PAGE = 'EDIT_PAGE';
 const CANCEL_EDIT_PAGE = 'CANCEL_EDIT_PAGE';
 const UPDATE_PAGE = 'UPDATE_PAGE';
 
-// Element actions
+// Element action
 const ADD_ELEMENT = 'ADD_ELEMENT';
 
 const defaultState = {
@@ -102,11 +102,14 @@ export function addElement(el) {
   return { ...el, type: ADD_ELEMENT };
 }
 
+// read data from the local Storage
 const persistedState = localStorage.getItem('virtual_notebook')
   ? JSON.parse(localStorage.getItem('virtual_notebook'))
   : defaultState;
 
 export const store = configureStore({ reducer, preloadedState: persistedState });
+
 store.subscribe(() => {
+  // write data to the local Storage
   localStorage.setItem('virtual_notebook', JSON.stringify(store.getState()));
 });

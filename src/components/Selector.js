@@ -23,18 +23,22 @@ const maxHeight = 300;
 const Selector = forwardRef((props, ref) => {
   const { selectionChanged, position, text } = props;
   const [visibleData, setVisibleData] = useState(data);
+
+  // index of highlighted element
   const [suggestionIndex, setSuggestionIndex] = useState(0);
   const ul = useRef(null);
 
   const container = useRef(null);
 
   useEffect(() => {
+    // receive text from Editor component as a prop and do filtering operation
     setVisibleData(
       data.filter((item) => item.title.toLowerCase().includes(text.toLowerCase())
         || item.id.toLowerCase().includes(text.toLowerCase())),
     );
   }, [text]);
 
+  // to execute commands triggered in Editor component
   useImperativeHandle(ref, () => ({
 
     handleKeyDown(e) {
@@ -65,8 +69,8 @@ const Selector = forwardRef((props, ref) => {
         selectionChanged(visibleData[suggestionIndex].id);
       }
     },
-
   }));
+
   return (
     <div
       className={style.container}
