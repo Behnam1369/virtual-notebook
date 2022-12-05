@@ -15,23 +15,29 @@ import style from './Editor.module.scss';
 import Error404 from './Error404';
 
 export default function Editor() {
-  const [position, setPosition] = useState({ top: 50, left: 50 });
+  // The position of the selector
+  const [position, setPosition] = useState({ top: 0, left: 0 });
   // whole input value
   const [value, setValue] = useState('');
   // only search phrase (text afte '/')
   const [text, setText] = useState('');
   const [showSelector, setShowSelector] = useState(false);
   const [showPages, setShowPages] = useState(false);
+  // h1, p, h2, h3, h4, h5, h6, i, b, u, p
   const [tagClass, setTagClass] = useState('p');
   const input = useRef(null);
   const selector = useRef(null);
   const dispatch = useDispatch();
+
+  // recalculate the position of the selector when focusing on the input
   const handleFocus = (e) => {
     const rect = e.target.getBoundingClientRect();
     setPosition({ top: rect.y + rect.height + window.scrollY, left: rect.x });
   };
 
   const firstId = useSelector((state) => state.pages[0]).id;
+
+  // in case of visiting home page use the first page id
   const id = (
     useParams().id !== undefined
       ? parseInt(useParams().id, 10)
@@ -57,6 +63,8 @@ export default function Editor() {
 
   const handleKeyDown = (e) => {
     if (e.key === '/') {
+      const rect = e.target.getBoundingClientRect();
+      setPosition({ top: rect.y + rect.height + window.scrollY, left: rect.x });
       setShowSelector(true);
     } else if (['ArrowDown', 'ArrowUp'].includes(e.key)) {
       e.preventDefault();
