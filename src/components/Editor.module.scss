@@ -1,0 +1,114 @@
+.container {
+  display: flex;
+  grid-template-columns: 400px 1fr;
+  height: 100%;
+
+  .main {
+    width: 100%;
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      color: silver;
+      font-size: 13px;
+
+      > div {
+        display: flex;
+
+        button {
+          background-color: transparent;
+          border: none;
+          outline: none;
+          margin-left: 10px;
+          color: black;
+          padding: 7px;
+          margin-right: 5px;
+        }
+
+        button:hover {
+          color: blue;
+          cursor: pointer;
+        }
+
+        p {
+          margin: 5px;
+          display: flex;
+          align-items: center;
+
+          span {
+            margin: 0 10px;
+          }
+
+          span:nth-child(2) {
+            color: blue;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+
+            svg {
+              padding-top: 4px;
+              padding-left: 3px;
+            }
+          }
+        }
+      }
+    }
+
+    .body {
+      width: 90%;
+      max-width: 600px;
+      margin: 0 auto;
+
+      .options {
+        border: solid 1px silver;
+        border-radius: 5px;
+        display: flex;
+        justify-content: space-between;
+        height: 35px;
+        color: gray;
+        margin-top: 20px;
+
+        div:nth-child(1) {
+          display: flex;
+          align-items: center;
+          padding-left: 5px;
+
+          > span {
+            background-color: #d9f9e6;
+            color: #347659;
+            width: 10px;
+            height: 15px;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            margin-right: 5px;
+            font-weight: bold;
+          }
+
+          svg {
+            margin: 0 5px;
+          }
+
+          svg:nth-child(3) {
+            background-color: red;
+            border-radius: 50%;
+            color: #dad6d6;
+            font-size: 22px;
+          }
+        }
+
+        div:nth-child(2) {
+          display: flex;
+          align-items: center;
+          padding-left: 5px;
+
+          svg {
+            margin: 0 3px;
+          }
+        }
+      }
+    }
+  }
+}

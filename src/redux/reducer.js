@@ -1,6 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 const ADD_PAGE = 'ADD_PAGE';
+const DELETE_PAGE = 'DELETE_PAGE';
+const EDIT_PAGE = 'EDIT_PAGE';
+const CANCEL_EDIT_PAGE = 'CANCEL_EDIT_PAGE';
+const UPDATE_PAGE = 'UPDATE_PAGE';
 
 const defaultState = {
   pages: [
@@ -27,6 +31,31 @@ export default function reducer(state = defaultState, action) {
             elements: [],
           }],
       };
+    case DELETE_PAGE:
+      return {
+        ...state,
+        pages: state.pages.filter((page) => page.id !== action.id),
+      };
+    case EDIT_PAGE:
+      return {
+        ...state,
+        pages: state.pages.map((page) => (page.id === action.id
+          ? { ...page, editing: true }
+          : { ...page, editing: false })),
+      };
+    case UPDATE_PAGE:
+      return {
+        ...state,
+        pages: state.pages.map((page) => (page.id === action.id
+          ? { ...page, title: action.title, editing: false }
+          : page)),
+      };
+    case CANCEL_EDIT_PAGE: {
+      return {
+        ...state,
+        pages: state.pages.map((page) => ({ ...page, editing: false })),
+      };
+    }
     default:
       return state;
   }
@@ -34,6 +63,23 @@ export default function reducer(state = defaultState, action) {
 
 export function addPage(el) {
   return { ...el, type: ADD_PAGE };
+}
+
+export function deletePage(el) {
+  return { ...el, type: DELETE_PAGE };
+}
+
+export function editPage(el) {
+  return { ...el, type: EDIT_PAGE };
+}
+
+export function cancelEditPage(el) {
+  return { ...el, type: CANCEL_EDIT_PAGE };
+}
+
+export function updatePage(el) {
+  console.log(el);
+  return { ...el, type: UPDATE_PAGE };
 }
 
 export const store = configureStore({ reducer });
