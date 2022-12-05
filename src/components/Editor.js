@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import Selector from './Selector';
+import Pages from './Pages';
 
 export default function Editor() {
   const [position, setPosition] = useState({ top: 50, left: 50 });
@@ -48,6 +49,7 @@ export default function Editor() {
 
   return (
     <div className="App">
+      <Pages />
       <div style={{ height: '400px' }} />
       <input
         type="text"
