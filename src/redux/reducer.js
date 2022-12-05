@@ -1,10 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 
+// Page actions
 const ADD_PAGE = 'ADD_PAGE';
 const DELETE_PAGE = 'DELETE_PAGE';
 const EDIT_PAGE = 'EDIT_PAGE';
 const CANCEL_EDIT_PAGE = 'CANCEL_EDIT_PAGE';
 const UPDATE_PAGE = 'UPDATE_PAGE';
+
+// Element actions
+const ADD_ELEMENT = 'ADD_ELEMENT';
 
 const defaultState = {
   pages: [
@@ -12,8 +16,8 @@ const defaultState = {
       id: 1,
       title: 'Home',
       elements: [
-        { style: 'h1', text: 'Front-end developer test project' },
-        { style: 'p', text: 'Your goal is to make a page that looks exactly like this one, and has the ability to create H1 text simply by typing / then 1, then typing text, and hitting enter.' },
+        { id: 1, style: 'h2', text: 'Front-end developer test project' },
+        { id: 2, style: 'p', text: 'Your goal is to make a page that looks exactly like this one, and has the ability to create H1 text simply by typing / then 1, then typing text, and hitting enter.' },
       ],
     },
   ],
@@ -50,12 +54,25 @@ export default function reducer(state = defaultState, action) {
           ? { ...page, title: action.title, editing: false }
           : page)),
       };
-    case CANCEL_EDIT_PAGE: {
+    case CANCEL_EDIT_PAGE:
       return {
         ...state,
         pages: state.pages.map((page) => ({ ...page, editing: false })),
       };
-    }
+    case ADD_ELEMENT:
+      return {
+        ...state,
+        pages: state.pages.map((page) => (page.id === action.pageId
+          ? {
+            ...page,
+            elements: [...page.elements, {
+              id: page.elements.length === 0 ? 1 : (page.elements[page.elements.length - 1].id) + 1,
+              style: action.style,
+              text: action.text,
+            }],
+          }
+          : page)),
+      };
     default:
       return state;
   }
@@ -78,8 +95,18 @@ export function cancelEditPage(el) {
 }
 
 export function updatePage(el) {
-  console.log(el);
   return { ...el, type: UPDATE_PAGE };
 }
 
-export const store = configureStore({ reducer });
+export function addElement(el) {
+  return { ...el, type: ADD_ELEMENT };
+}
+
+const persistedState = localStorage.getItem('virtual_notebook')
+  ? JSON.parse(localStorage.getItem('virtual_notebook'))
+  : defaultState;
+
+export const store = configureStore({ reducer, preloadedState: persistedState });
+store.subscribe(() => {
+  localStorage.setItem('virtual_notebook', JSON.stringify(store.getState()));
+});

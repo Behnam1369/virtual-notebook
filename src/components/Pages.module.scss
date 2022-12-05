@@ -35,7 +35,16 @@
         }
       }
 
-      > button {
+      a {
+        text-decoration: none;
+        color: black;
+      }
+
+      a:hover {
+        color: blue;
+      }
+
+      button {
         background-color: transparent;
         border: none;
       }
