@@ -1,11 +1,11 @@
 import './App.css';
+import Editor from './components/Editor';
 
 function App() {
-  console.log('App - Rendered');
-
   return (
     <div className="App">
-      <h1>Hello World!</h1>
+      <h1>Hello World2!</h1>
+      <Editor />
     </div>
   );
 }
