@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Selector from './Selector';
 
 export default function Editor() {
@@ -6,11 +6,20 @@ export default function Editor() {
   const [value, setValue] = useState('');
   const [text, setText] = useState('');
   const [showSelector, setShowSelector] = useState(false);
+  const input = useRef(null);
   const selector = useRef(null);
   const handleFocus = (e) => {
     const rect = e.target.getBoundingClientRect();
-    setPosition({ top: rect.y + rect.height, left: rect.x });
+    setPosition({ top: rect.y + rect.height + window.scrollY, left: rect.x });
   };
+
+  useEffect(() => {
+    // handle window resize
+    window.addEventListener('resize', () => {
+      const rect = input.current.getBoundingClientRect();
+      setPosition({ top: rect.y + rect.height + window.scrollY, left: rect.x });
+    });
+  }, []);
 
   const handleKeyDown = (e) => {
     if (e.key === '/') {
@@ -39,12 +48,14 @@ export default function Editor() {
 
   return (
     <div className="App">
+      <div style={{ height: '400px' }} />
       <input
         type="text"
         onFocus={(e) => { handleFocus(e); }}
         value={value}
         onChange={(e) => handleChange(e)}
         onKeyUp={(e) => handleKeyDown(e)}
+        ref={input}
       />
       {showSelector && (
         <Selector
@@ -54,6 +65,7 @@ export default function Editor() {
           text={text}
         />
       )}
+      <div style={{ height: '400px' }} />
     </div>
   );
 }
