@@ -9,6 +9,10 @@ const UPDATE_PAGE = 'UPDATE_PAGE';
 
 // Element action
 const ADD_ELEMENT = 'ADD_ELEMENT';
+const EDIT_ELEMENT = 'EDIT_ELEMENT';
+const UPDATE_ELEMENT = 'UPDATE_ELEMENT';
+const DELETE_ELEMENT = 'DELETE_ELEMENT';
+const CANCEL_EDIT_ELEMENT = 'CANCEL_EDIT_ELEMENT';
 
 const defaultState = {
   pages: [
@@ -73,6 +77,52 @@ export default function reducer(state = defaultState, action) {
           }
           : page)),
       };
+    case EDIT_ELEMENT:
+      return {
+        ...state,
+        pages: state.pages.map((page) => (page.id === action.pageId
+          ? {
+            ...page,
+            elements: page.elements.map((element) => (element.id === action.ElementId
+              ? { ...element, editing: true }
+              : { ...element, editing: false })),
+          }
+          : page)),
+      };
+    case UPDATE_ELEMENT:
+      return {
+        ...state,
+        pages: state.pages.map((page) => (page.id === action.pageId
+          ? {
+            ...page,
+            elements: page.elements.map((element) => (element.id === action.ElementId
+              ? {
+                id: action.ElementId,
+                style: action.style,
+                text: action.text,
+              }
+              : { ...element, editing: false })),
+          }
+          : page)),
+      };
+    case DELETE_ELEMENT:
+      return {
+        ...state,
+        pages: state.pages.map((page) => (page.id === action.pageId
+          ? {
+            ...page,
+            elements: page.elements.filter((element) => element.id !== action.ElementId),
+          }
+          : page)),
+      };
+    case CANCEL_EDIT_ELEMENT:
+      return {
+        ...state,
+        pages: state.pages.map((page) => ({
+          ...page,
+          elements: page.elements.map((element) => ({ ...element, editing: false })),
+        })),
+      };
     default:
       return state;
   }
@@ -100,6 +150,22 @@ export function updatePage(el) {
 
 export function addElement(el) {
   return { ...el, type: ADD_ELEMENT };
+}
+
+export function editElement(el) {
+  return { ...el, type: EDIT_ELEMENT };
+}
+
+export function updateElement(el) {
+  return { ...el, type: UPDATE_ELEMENT };
+}
+
+export function deleteElement(el) {
+  return { ...el, type: DELETE_ELEMENT };
+}
+
+export function cencelEditElement() {
+  return { type: CANCEL_EDIT_ELEMENT };
 }
 
 // read data from the local Storage

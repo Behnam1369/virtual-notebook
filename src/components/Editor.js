@@ -8,7 +8,9 @@ import {
 import { BsClock } from 'react-icons/bs';
 import { GiRabbitHead } from 'react-icons/gi';
 import { BiDotsVerticalRounded } from 'react-icons/bi';
-import { addElement } from '../redux/reducer';
+import {
+  addElement, editElement, updateElement, deleteElement, cencelEditElement,
+} from '../redux/reducer';
 import Selector from './Selector';
 import Pages from './Pages';
 import style from './Editor.module.scss';
@@ -21,6 +23,7 @@ export default function Editor() {
   const [value, setValue] = useState('');
   // only search phrase (text afte '/')
   const [text, setText] = useState('');
+  const [editingElementId, setEditingElementId] = useState(null);
   const [showSelector, setShowSelector] = useState(false);
   const [showPages, setShowPages] = useState(false);
   // h1, p, h2, h3, h4, h5, h6, i, b, u, p
@@ -43,6 +46,17 @@ export default function Editor() {
       ? parseInt(useParams().id, 10)
       : firstId);
   const page = useSelector((state) => state.pages.find((p) => p.id === id));
+
+  useEffect(() => {
+    dispatch(cencelEditElement());
+    setTagClass('p');
+    setValue('');
+  }, [id]);
+
+  useEffect(() => {
+    input.current.focus();
+  }, [editingElementId]);
+
   useEffect(() => {
     // handle window resize
     window.addEventListener('resize', () => {
@@ -74,7 +88,18 @@ export default function Editor() {
       if (showSelector) {
         selector.current.handleKeyDown(e);
       } else {
-        dispatch(addElement({ pageId: page.id, style: tagClass, text: value }));
+        if (editingElementId === null) {
+          dispatch(addElement({ pageId: page.id, style: tagClass, text: value }));
+        } else if (value === '') {
+          dispatch(deleteElement({
+            pageId: page.id, ElementId: editingElementId,
+          }));
+        } else {
+          dispatch(updateElement({
+            pageId: page.id, ElementId: editingElementId, style: tagClass, text: value,
+          }));
+        }
+        setEditingElementId(null);
         setValue('');
         setTagClass('p');
       }
@@ -105,12 +130,24 @@ export default function Editor() {
     setShowPages(!showPages);
   };
 
+  const handleEdit = (pageId, element) => {
+    setTagClass(element.style);
+    setValue(element.text);
+    setEditingElementId(element.id);
+    dispatch(editElement({ pageId, ElementId: element.id }));
+  };
+
   return (
     <>
       {!page && <Error404 />}
       {page && (
       <div className={style.container}>
-        {showPages && <Pages className={style.pages} togglePages={togglePages} />}
+        {showPages && (
+        <Pages
+          className={style.pages}
+          togglePages={togglePages}
+        />
+        )}
         <div className={style.main}>
           <div className={style.header}>
             <div>
@@ -160,18 +197,51 @@ export default function Editor() {
             </div>
             <h1>{page.title}</h1>
             {
-            page.elements.map((el) => <p key={el.id} className={style[el.style]}>{el.text}</p>)
-          }
-            <input
-              type="text"
-              className={`${style.input} ${style[tagClass]}`}
-              onFocus={(e) => { handleFocus(e); }}
-              value={value}
-              onChange={(e) => handleChange(e)}
-              onKeyDown={(e) => handleKeyDown(e)}
-              ref={input}
-              placeholder="Type / for blocks"
-            />
+              page.elements.map((el) => (
+                <>
+                  { el.editing
+                    && (
+                    <input
+                      type="text"
+                      key={el.id}
+                      className={`${style.input} ${style[tagClass]}`}
+                      onFocus={(e) => { handleFocus(e); }}
+                      value={value}
+                      onChange={(e) => handleChange(e, input)}
+                      onKeyDown={(e) => handleKeyDown(e)}
+                      ref={input}
+                      placeholder="Type / for blocks"
+                    />
+                    )}
+                  { !el.editing
+                    && (
+                    // eslint-disable-next-line max-len
+                    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events
+                    <p
+                      key={el.id}
+                      className={style[el.style]}
+                      onClick={() => handleEdit(page.id, el)}
+                    >
+                      {el.text}
+                    </p>
+                    ) }
+                </>
+              ))
+            }
+            {
+              page.elements.filter((el) => el.editing).length === 0 && (
+              <input
+                type="text"
+                className={`${style.input} ${style[tagClass]}`}
+                onFocus={(e) => { handleFocus(e); }}
+                value={value}
+                onChange={(e) => handleChange(e, input)}
+                onKeyDown={(e) => handleKeyDown(e)}
+                ref={input}
+                placeholder="Type / for blocks"
+              />
+              )
+            }
             {showSelector && (
             <Selector
               selectionChanged={(val) => selectionChanged(val)}
