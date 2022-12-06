@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { BsChevronLeft } from 'react-icons/bs';
 import { AiOutlineEdit, AiOutlineCheck, AiOutlineClose } from 'react-icons/ai';
 import { FaRegTrashAlt } from 'react-icons/fa';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import PropType from 'prop-types';
 import {
   addPage, deletePage, editPage, updatePage, cancelEditPage,
@@ -46,11 +46,26 @@ export default function Pages(props) {
     }
   };
 
+  const firstId = useSelector((state) => state.pages[0]).id;
+
+  // in case of visiting home page use the first page id
+  const urlId = (
+    useParams().id !== undefined
+      ? parseInt(useParams().id, 10)
+      : firstId);
+
+  const navigate = useNavigate();
+
   const handleDelete = (id) => {
     if (pages.length === 1) {
       setErrorWithAnimation('Page list cannot be empty');
     } else {
       dispatch(deletePage({ id }));
+
+      // if user deleted the current page, navigate to the first page
+      if (id === urlId) {
+        navigate(`/pages/${firstId}`);
+      }
     }
   };
 
