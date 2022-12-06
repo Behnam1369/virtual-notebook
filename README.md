@@ -8,6 +8,7 @@ Please find the requirements for this project [here](https://docs.google.com/doc
 
 # screenshot 
 ![Screenshot1](public/screenshot.jpg)
+![Screenshot1](public/screenshot2.jpg)
 
 
 ## Technologies
