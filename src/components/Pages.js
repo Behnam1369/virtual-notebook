@@ -95,12 +95,12 @@ export default function Pages(props) {
           <BsChevronLeft />
         </button>
       </div>
-      <ul>
+      <ul data-testid="pageList">
         {pages.map((page) => (
           <li key={page.id}>
             {page.editing && (
             <form onSubmit={(e) => handleUpdate(e, page.id)}>
-              <input type="text" value={editingText} onChange={(e) => setEditingText(e.target.value)} />
+              <input type="text" data-testid="editingPageInput" value={editingText} onChange={(e) => setEditingText(e.target.value)} />
               <div>
                 <button type="submit">
                   <AiOutlineCheck title="Save" />
@@ -129,11 +129,11 @@ export default function Pages(props) {
         ))}
       </ul>
       <form className={style.footer} onSubmit={(e) => handleSubmit(e)}>
-        <input type="text" value={text} onChange={(e) => handleTextChange(e)} placeholder="Type new pag's title" maxLength={25} />
+        <input type="text" data-testid="newPageInput" value={text} onChange={(e) => handleTextChange(e)} placeholder="Type new pag's title" maxLength={25} />
         <button type="submit">
           Add Page
         </button>
-        {error && <p>{error}</p>}
+        {error && <p data-testid="message">{error}</p>}
       </form>
     </div>
   );

@@ -76,6 +76,7 @@ const Selector = forwardRef((props, ref) => {
       className={style.container}
       ref={container}
       style={{ top: position.top, left: position.left }}
+      data-testid="selector"
     >
       <b>Add Blocks</b>
       <span>Keep typing to filter, or escape to exit</span>

@@ -1,4 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
+import {
+  useState, useRef, useEffect, Fragment,
+} from 'react';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -54,7 +56,7 @@ export default function Editor() {
   }, [id]);
 
   useEffect(() => {
-    input.current.focus();
+    if (input.current != null) input.current.focus();
   }, [editingElementId]);
 
   useEffect(() => {
@@ -141,7 +143,7 @@ export default function Editor() {
     <>
       {!page && <Error404 />}
       {page && (
-      <div className={style.container}>
+      <div className={style.container} data-testid="editor">
         {showPages && (
         <Pages
           className={style.pages}
@@ -153,7 +155,7 @@ export default function Editor() {
             <div>
               {!showPages && (
               <>
-                <button type="button" onClick={() => togglePages()}>
+                <button data-testid="hamburgurButton" type="button" onClick={() => togglePages()}>
                   <RxHamburgerMenu />
                 </button>
               </>
@@ -198,12 +200,11 @@ export default function Editor() {
             <h1>{page.title}</h1>
             {
               page.elements.map((el) => (
-                <>
+                <Fragment key={el.id}>
                   { el.editing
                     && (
                     <input
                       type="text"
-                      key={el.id}
                       className={`${style.input} ${style[tagClass]}`}
                       onFocus={(e) => { handleFocus(e); }}
                       value={value}
@@ -211,6 +212,7 @@ export default function Editor() {
                       onKeyDown={(e) => handleKeyDown(e)}
                       ref={input}
                       placeholder="Type / for blocks"
+                      data-testid="editingElementInput"
                     />
                     )}
                   { !el.editing
@@ -218,14 +220,13 @@ export default function Editor() {
                     // eslint-disable-next-line max-len
                     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events
                     <p
-                      key={el.id}
                       className={style[el.style]}
                       onClick={() => handleEdit(page.id, el)}
                     >
                       {el.text}
                     </p>
                     ) }
-                </>
+                </Fragment>
               ))
             }
             {
@@ -239,6 +240,7 @@ export default function Editor() {
                 onKeyDown={(e) => handleKeyDown(e)}
                 ref={input}
                 placeholder="Type / for blocks"
+                data-testid="newElementInput"
               />
               )
             }
