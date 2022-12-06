@@ -3,7 +3,7 @@ import style from './Error404.module.scss';
 
 export default function Error404() {
   return (
-    <div className={style.div}>
+    <div className={style.div} data-testid="error404">
       <h1>ERROR 404</h1>
       <h2>
         Page not found. Click here to go to the
