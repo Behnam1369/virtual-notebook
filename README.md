@@ -3,8 +3,7 @@ A note keeper application inspired by notion. Users can add notes with specific 
 
 
 # Requirements for this project
-
-Please find the requirements for this project [here](https://docs.google.com/document/d/161n6pubqHfmIiDVA6dOlhqUZlpQiTfG0_8hUTHAAEzc/edit#).
+I was supposed to create an editor similar to notion with basic features.
 
 # screenshot 
 ![Screenshot1](public/screenshot.jpg)
